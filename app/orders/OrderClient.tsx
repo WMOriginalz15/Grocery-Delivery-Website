@@ -20,7 +20,7 @@ interface OrdersClientProps {
 }
 
 type ExtendedOrder = Order & {
-  user: User;
+  user: User | null;
 };
 
 const OrdersClient: React.FC<OrdersClientProps> = ({ orders }) => {
@@ -31,7 +31,7 @@ const OrdersClient: React.FC<OrdersClientProps> = ({ orders }) => {
     rows = orders.map((order) => {
       return {
         id: order.id,
-        customer: order.user.name,
+        customer: order.user?.name || "N/A",
         amount: formatPrice(order.amount / 100),
         paymentStatus: order.status,
         date: moment(order.createDate).fromNow(),
