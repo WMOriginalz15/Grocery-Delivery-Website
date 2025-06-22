@@ -8,3 +8,9 @@ export type SafeUser = Omit<
   updateAt: string;
   emailVerified: string | null;
 };
+
+export type ImageType = {
+  color: string;
+  colorCode: string;
+  image: File | null;
+};
