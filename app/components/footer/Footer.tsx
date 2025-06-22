@@ -35,7 +35,7 @@ const Footer = () => {
             <p className="mb-2">
             At our online grocery store, we are committed to providing fresh, high-quality groceries and household essentials at affordable prices. Our mission is to make your shopping experience convenient, reliable, and enjoyable. 
             </p>
-            <p className="text-green-300">&copy; {new Date().getFullYear()} FLC~Lightening. All rights reserved</p>
+            <p className="text-green-300">&copy; {new Date().getFullYear()} Grocery Store. All rights reserved</p>
           </div>
           <FooterList>
             <h3 className="text-base font-bold mb-2 text-green-200">Follow Us</h3>
