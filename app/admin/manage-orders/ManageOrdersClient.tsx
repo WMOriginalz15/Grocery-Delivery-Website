@@ -34,7 +34,7 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
     rows = orders.map((order) => {
       return {
         id: order.id,
-        customer: order.user.name,
+        customer: order.user?.name || "N/A",
         amount: formatPrice(order.amount / 100),
         paymentStatus: order.status,
         date: moment(order.createDate).fromNow(),

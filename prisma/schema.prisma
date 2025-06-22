@@ -47,7 +47,7 @@ model Product{
   name String
   description String
   price Float
-  brand String
+  brand String?
   category String
   inStock Boolean
   images Image[]
@@ -78,7 +78,7 @@ model Order{
   products CartProductType[]
   address Address?
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 type CartProductType{
@@ -86,7 +86,7 @@ type CartProductType{
   name String
   description String
   category String
-  brand String
+  brand String?
   selectedImg Image
   quantity Int
   price Float

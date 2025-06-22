@@ -7,46 +7,49 @@ import {
   AiFillInstagram,
   AiFillYoutube,
 } from "react-icons/ai";
+import { categories } from "@/utils/Categories";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-slate-200 text-sm mt-16">
+    <footer className="bg-gradient-to-r from-green-700 to-green-900 text-green-100 border-t-4 border-green-400 shadow-inner mt-16">
       <Container>
         <div className="flex flex-col md:flex-row justify-between pt-16 pb-8">
           <FooterList>
-            <h3 className="text-base font-bold mb-2">Other Services</h3>
-            <Link href="#">Book Appointment</Link>
-            <Link href="#">Rent Equipment</Link>
-           
+            <h3 className="text-base font-bold mb-2 text-green-200">Store Categories</h3>
+            {categories.map((item) => (
+              <Link
+                key={item.label}
+                href={item.label === "All" ? "/" : `/?category=${encodeURIComponent(item.label)}`}
+                className="hover:text-green-300 transition"
+              >
+                {item.label}
+              </Link>
+            ))}
           </FooterList>
           <FooterList>
-            <h3 className="text-base font-bold mb-2">Customer Service</h3>
-            <Link href="#">Contact Us</Link>
-            <Link href="#">Shipping Policy</Link>
-            <Link href="#">Returns & Exchanges</Link>
-            <Link href="#">FAQs</Link>
+            <h3 className="text-base font-bold mb-2 text-green-200">Customer Service</h3>
+            <Link href="#" className="hover:text-green-300 transition">Contact Us</Link>
           </FooterList>
           <div className="w-full md:w-1/3 mb-6 md:mb-0">
-            <h3 className="text-base font-bold mb-2">About Us</h3>
+            <h3 className="text-base font-bold mb-2 text-green-200">About Us</h3>
             <p className="mb-2">
-              At our lightening e store, we are dedicated to providing the latest
-              and greatest lightening equipments and accessories to our customers. 
+            At our online grocery store, we are committed to providing fresh, high-quality groceries and household essentials at affordable prices. Our mission is to make your shopping experience convenient, reliable, and enjoyable. 
             </p>
-            <p>&copy; {new Date().getFullYear()} FLC~Lightening. All rights reserved</p>
+            <p className="text-green-300">&copy; {new Date().getFullYear()} FLC~Lightening. All rights reserved</p>
           </div>
           <FooterList>
-            <h3 className="text-base font-bold mb-2">Follow Us</h3>
+            <h3 className="text-base font-bold mb-2 text-green-200">Follow Us</h3>
             <div className="flex gap-2">
-              <Link href="#">
+              <Link href="#" className="hover:text-green-300 transition">
                 <MdFacebook size={24} />
               </Link>
-              <Link href="#">
+              <Link href="#" className="hover:text-green-300 transition">
                 <AiFillTwitterCircle size={24} />
               </Link>
-              <Link href="#">
+              <Link href="#" className="hover:text-green-300 transition">
                 <AiFillInstagram size={24} />
               </Link>
-              <Link href="#">
+              <Link href="#" className="hover:text-green-300 transition">
                 <AiFillYoutube size={24} />
               </Link>
             </div>

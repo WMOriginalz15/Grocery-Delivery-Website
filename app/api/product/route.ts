@@ -3,13 +3,10 @@ import { NextResponse } from "next/server";
 import getCurrentUser from "@/actions/getCurrentUser";
 
 export async function POST(request: Request) {
+  try {
   const currentUser = await getCurrentUser();
-
   if (!currentUser) return NextResponse.error();
-
-  if (currentUser.role !== "ADMIN") {
-    return NextResponse.error();
-  }
+    if (currentUser.role !== "ADMIN") return NextResponse.error();
 
   const body = await request.json();
   const { name, description, price, brand, category, inStock, images } = body;
@@ -27,6 +24,10 @@ export async function POST(request: Request) {
   });
 
   return NextResponse.json(product);
+  } catch (error) {
+    console.error("Product creation error:", error);
+    return NextResponse.error();
+  }
 }
 
 export async function PUT(request: Request) {

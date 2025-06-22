@@ -40,8 +40,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
               bg="bg-green-200"
               color="text-green-700"
             />
+          ) : order.status === "paid" ? (
+            <Status
+              text="paid"
+              icon={MdDone}
+              bg="bg-green-200"
+              color="text-green-700"
+            />
           ) : (
-            <></>
+            <span className="text-slate-500">N/A</span>
           )}
         </div>
       </div>

@@ -47,7 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
         <div className="aspect-square overflow-hidden relative w-full">
           <Image
             fill
-            src={data.images[0].image}
+            src={data.images?.[0]?.image || "/placeholder.png"}
             alt={data.name}
             className="w-full h-full object-contain"
           />
@@ -57,7 +57,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
           <Rating value={productRating} readOnly />
         </div>
         <div>{data.reviews.length} reviews</div>
-        <div className="font-semibold">{formatPrice(data.price)}</div>
+        <div className="font-semibold">
+          {(() => {
+            const price = formatPrice(data.price); // e.g., "GH₵2,000.00"
+            const match = price.match(/^([^\d]+)([\d,\.]+)/);
+            return (
+              <span>
+                <span className="font-normal text-base">{match ? match[1] : "GH₵"}</span>
+                <span className="font-bold text-xl">{match ? match[2] : data.price}</span>
+              </span>
+            );
+          })()}
+        </div>
       </div>
     </div>
   );

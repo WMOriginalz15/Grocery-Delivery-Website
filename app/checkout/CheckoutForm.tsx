@@ -1,94 +1,110 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
-import { formatPrice } from "@/utils/formatPrice";
-import {
-  useStripe,
-  useElements,
-  PaymentElement,
-  AddressElement,
-} from "@stripe/react-stripe-js";
-import { useState, useEffect } from "react";
-import { toast } from "react-hot-toast";
+import { PaystackButton } from "react-paystack";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Heading from "../components/Heading";
 import Button from "../components/Button";
 
 interface CheckoutFormProps {
-  clientSecret: string;
-  handleSetPaymentSuccess: (value: boolean) => void;
+  userEmail: string;
 }
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({
-  clientSecret,
-  handleSetPaymentSuccess,
-}) => {
-  const { cartTotalAmount, handleClearCart, handleSetPaymentIntent } =
-    useCart();
-  const stripe = useStripe();
-  const elements = useElements();
-  const [isLoading, setIsLoading] = useState(false);
-  const formattedPrice = formatPrice(cartTotalAmount);
+const CheckoutForm = ({ userEmail }: CheckoutFormProps) => {
+  const { cartProducts, handleClearCart } = useCart();
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
+  const router = useRouter();
 
-  useEffect(() => {
-    if (!stripe) {
-      return;
-    }
-    if (!clientSecret) {
-      return;
-    }
-    handleSetPaymentSuccess(false);
-  }, [stripe]);
+  // Null check for cartProducts
+  const totalAmount = (cartProducts ?? []).reduce(
+    (sum, item) => sum + (item.price * (item.quantity || 1)),
+    0
+  );
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Hardcode for debug - replace with your real public key and a valid email
+  const publicKey = "pk_test_cce5638537fb949016c734efd4a9473279ad4762";
+  const email = userEmail && userEmail.includes("@") ? userEmail : "test@example.com";
+  const amount = Number.isFinite(totalAmount) && totalAmount > 0 ? Math.round(totalAmount * 100) : 0;
 
-    if (!stripe || !elements) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    stripe
-      .confirmPayment({
-        elements,
-        redirect: "if_required",
-      })
-      .then((result) => {
-        if (!result.error) {
-          toast.success("Checkout Success");
-
-          handleClearCart();
-          handleSetPaymentSuccess(true);
-          handleSetPaymentIntent(null);
-        }
-
-        setIsLoading(false);
-      });
+  // Add custom_fields as required by PaystackButtonProps
+  const paystackConfig = {
+    email,
+    amount,
+    publicKey,
+    currency: "GHS",
+    metadata: {
+      cart: cartProducts,
+      custom_fields: [
+        {
+          display_name: "Cart Items",
+          variable_name: "cart",
+          value: JSON.stringify(cartProducts),
+        },
+      ],
+    },
   };
 
+  // Debug log
+  console.log("Paystack config:", paystackConfig);
+
+  const handleSuccess = async () => {
+    setOrderError(null);
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userEmail: email,
+          cartProducts,
+          totalAmount,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error("Order not saved");
+      }
+      setPaymentSuccess(true);
+      handleClearCart();
+      setTimeout(() => {
+        router.push("/orders");
+      }, 2000);
+    } catch (err) {
+      setOrderError("Order was not saved. Please contact support.");
+    }
+  };
+
+  if (paymentSuccess) {
   return (
-    <form onSubmit={handleSubmit} id="payment-form">
-      <div className="mb-6">
-        <Heading title="Enter your details to complete checkout" />
+      <div className="flex flex-col items-center gap-4">
+        <div className="text-teal-500 text-center text-lg font-semibold">Payment Successful!</div>
+        <div className="text-center">Redirecting to your orders...</div>
       </div>
-      <h2 className="font-semibold mb-2">Address Information</h2>
-      <AddressElement
-        options={{
-          mode: "shipping",
-          allowedCountries: ["US", "KE"],
-        }}
-      />
-      <h2 className="font-semibold mt-4 mb-2">Payment Information</h2>
-      <PaymentElement id="payment-element" options={{ layout: "tabs" }} />
-      <div className="py-4 text-center text-slate-700 text-xl font-bold">
-        Total: {formattedPrice}
+    );
+  }
+
+  if (!publicKey || !email || amount <= 0) {
+    return (
+      <div className="text-center text-red-600 font-semibold">
+        Error: Invalid payment parameters. Please check your Paystack public key, email, and cart total.
       </div>
-      <Button
-        label={isLoading ? "Processing" : "Pay now"}
-        disabled={isLoading || !stripe || !elements}
-        onClick={() => {}}
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <div className="text-lg font-semibold">Total: GHS {totalAmount.toFixed(2)}</div>
+      {orderError && (
+        <div className="text-red-600 text-center">{orderError}</div>
+      )}
+      <PaystackButton
+        {...paystackConfig}
+        text="Pay Now"
+        onSuccess={handleSuccess}
+        onClose={() => {}}
+        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded shadow"
       />
-    </form>
+    </div>
   );
 };
 

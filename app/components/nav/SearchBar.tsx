@@ -32,16 +32,18 @@ const SearchBar = () => {
         reset()
     }
 
-    return ( <div className="flex items-center">
+    return (
+      <form className="flex items-center" onSubmit={handleSubmit(onSubmit)}>
         <input 
         {...register('searchTerm')}
         autoComplete="off"
         type="text"
-        placeholder="Explore FLC~Lightening"
+          placeholder="Search for groceries, e.g. Tomatoes"
         className="p-2 border border-gray-300 rounded-l-md focus:outline-none focus:bourder-[0.5px] focus:border-slate-500 w-80"
         />
-        <button onClick={handleSubmit(onSubmit)} className="bg-slate-700 hover:opacity-80 text-white p-2 rounded-r-md">Search</button>
-    </div> );
+        <button type="submit" className="bg-slate-700 hover:opacity-80 text-white p-2 rounded-r-md">Search</button>
+      </form>
+    );
 }
  
 export default SearchBar;

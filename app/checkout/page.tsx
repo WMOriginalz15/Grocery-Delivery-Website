@@ -3,11 +3,13 @@ import FormWrap from "../components/FormWrap";
 import CheckoutClient from "./CheckoutClient";
 
 const Checkout = () => {
+  // TODO: Replace with actual user email from session or context
+  const userEmail = "test@example.com";
   return (
     <div className="p-8">
       <Container>
         <FormWrap>
-          <CheckoutClient />
+          <CheckoutClient userEmail={userEmail} />
         </FormWrap>
       </Container>
     </div>

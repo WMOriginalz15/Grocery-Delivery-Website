@@ -37,10 +37,9 @@ const NavBar = async () => {
             <Link
               href="/"
               className={`${redressed.className} font-bold text-2xl`}
-              style={{ color: '#c2410c' }}
-              
+              style={{ color: '#43cea2' }}
             >
-              FLC~Lightening
+              Grocery Store
             </Link>
             <div className="hidden md:block"><SearchBar/></div>
             <div className="flex items-center gap-8 md:gap-12">

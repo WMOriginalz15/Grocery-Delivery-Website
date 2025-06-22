@@ -2,7 +2,6 @@
 
 import Button from "@/app/components/Button";
 import ProductImage from "@/app/components/products/ProductImage";
-import SetColor from "@/app/components/products/SetColor";
 import SetQuatity from "@/app/components/products/SetQuantity";
 import { useCart } from "@/hooks/useCart";
 import { Rating } from "@mui/material";
@@ -83,7 +82,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     }
 
     setCartProduct((prev) => {
-      return { ...prev, quantity: ++prev.quantity };
+      return { ...prev, quantity: prev.quantity + 1 };
     });
   }, [cartProduct]);
 
@@ -93,7 +92,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     }
 
     setCartProduct((prev) => {
-      return { ...prev, quantity: --prev.quantity };
+      return { ...prev, quantity: prev.quantity - 1 };
     });
   }, [cartProduct]);
 
@@ -115,9 +114,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         <Horizontal />
         <div>
           <span className="font-semibold">CATEGORY:</span> {product.category}
-        </div>
-        <div>
-          <span className="font-semibold">BRAND:</span> {product.brand}
         </div>
         <div className={product.inStock ? "text-teal-400" : "text-rose-400"}>
           {product.inStock ? "In stock" : "Out of stock"}
@@ -141,11 +137,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           </>
         ) : (
           <>
-            <SetColor
-              cartProduct={cartProduct}
-              images={product.images}
-              handleColorSelect={handleColorSelect}
-            />
             <Horizontal />
             <SetQuatity
               cartProduct={cartProduct}
