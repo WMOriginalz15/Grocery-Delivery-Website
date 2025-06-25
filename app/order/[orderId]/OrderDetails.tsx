@@ -7,12 +7,28 @@ import { Order } from "@prisma/client";
 import moment from "moment";
 import { MdAccessTimeFilled, MdDeliveryDining, MdDone } from "react-icons/md";
 import OrderItem from "./OrderItem";
+import { useCart } from "@/hooks/useCart";
+import { useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface OrderDetailsProps {
   order: Order;
 }
 
 const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
+  const { handleClearCart } = useCart();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (searchParams.get("clearCart") === "1") {
+      handleClearCart();
+      // Remove the param from the URL
+      const url = window.location.pathname;
+      router.replace(url);
+    }
+  }, [searchParams, handleClearCart, router]);
+
   return (
     <div className="max-w-[1150px] m-auto flex flex-col gap-2">
       <div className="mt-8">
